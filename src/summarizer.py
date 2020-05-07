@@ -177,7 +177,7 @@ if __name__ == '__main__':
                               min_length=10, min_src_nsents=3, 
                               min_src_ntokens_per_sent=5, 
                               min_tgt_ntokens=5, 
-                              mode='test', 
+                              mode='test_text', 
                               model_path='./models/', 
                               optim='adam', 
                               param_init=0, 
