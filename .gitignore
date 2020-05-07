@@ -4,3 +4,4 @@ env
 bert_data_test
 pyrouge
 temp
+.vscode
