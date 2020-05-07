@@ -11,6 +11,7 @@ from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_
 from train_extractive import train_ext, validate_ext, test_ext
 from prepro import data_builder
 import glob, os
+from rouge import Rouge
 
 model_flags = ['hidden_size', 'ff_size', 'heads', 'emb_size', 'enc_layers', 'enc_hidden_size', 'enc_ff_size',
                'dec_layers', 'dec_hidden_size', 'dec_ff_size', 'encoder', 'ff_actv', 'use_interval']
@@ -184,7 +185,7 @@ if __name__ == '__main__':
                               param_init_glorot=True, 
                               recall_eval=False, 
                               report_every=1, 
-                              report_rouge=True, 
+                              report_rouge=False, 
                               result_path='./results/abs_bert_cnndm_sample', 
                               save_checkpoint_steps=5, 
                               seed=666, 
@@ -210,6 +211,7 @@ if __name__ == '__main__':
 
     print(args.task, args.mode) 
 
+    r = Rouge()
     cp = args.test_from
     try:
     	step = int(cp.split('.')[-2].split('_')[-1])
@@ -224,17 +226,18 @@ if __name__ == '__main__':
         with open(file) as f:
             source=f.read().rstrip()
 
-    data_builder.str_format_to_bert(  source, args, './bert_data_test/cnndm.test.0.bert.pt') 
-    args.bert_data_path= './bert_data_test/cnndm'
-    tgt, time_used = test_text_abs(args, device_id, cp, step, predictor)
+        data_builder.str_format_to_bert(source, args, './bert_data_test/cnndm.test.0.bert.pt') 
+        args.bert_data_path= './bert_data_test/cnndm'
+        tgt, time_used = test_text_abs(args, device_id, cp, step, predictor)
 
-    # some postprocessing 
+        # some postprocessing 
 
-    sentences = tgt.split('<q>')
-    sentences = [sent.capitalize() for sent in sentences]
-    sentences = '. '.join(sentences).rstrip()
-    sentences = sentences.replace(' ,', ',')
-    sentences = sentences+'.'
+        sentences = tgt.split('<q>')
+        sentences = [sent.capitalize() for sent in sentences]
+        sentences = '. '.join(sentences).rstrip()
+        sentences = sentences.replace(' ,', ',')
+        sentences = sentences+'.'
 
-    print("summary [{}]".format(sentences))
-    print("time used {}".format(time_used))
+        print("summary [{}]".format(sentences))
+        print(r.get_scores(sentences, source, avg=True))
+        print("time used {}".format(time_used))
