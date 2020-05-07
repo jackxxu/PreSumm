@@ -5,5 +5,5 @@ bert_data_test
 pyrouge
 temp
 .vscode
-**/*.ipynb
+**/*-checkpoint.ipynb
 data/cases_NC_with_head_ext2.csv.zip
