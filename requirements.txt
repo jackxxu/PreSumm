@@ -3,6 +3,7 @@ multiprocess
 nltk
 numpy
 rouge
+pyrouge
 pytorch-transformers
 tensorboardX
 torch
