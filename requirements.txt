@@ -1,9 +1,9 @@
 jupyter
-multiprocess==0.70.9
-nltk==3.5
-numpy==1.17.2
-rouge==1.0.0
-pytorch-transformers==1.2.0
-tensorboardX==1.9
+multiprocess
+nltk
+numpy
+rouge
+pytorch-transformers
+tensorboardX
 torch
-wheel==0.34.2
+wheel
