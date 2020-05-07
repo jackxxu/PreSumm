@@ -195,7 +195,7 @@ if __name__ == '__main__':
                               temp_dir='./temp', 
                               test_all=False, 
                               test_batch_size=500, 
-                              test_from='./models/XSUM_OneSentence/model_step_30000.pt', 
+                              test_from='./models/CNN_DailyMail_Abstractive/model_step_148000.pt', 
                               test_start_from=-1, 
                               train_from='', 
                               train_steps=1000, 
