@@ -31,10 +31,10 @@ def init_args():
     parser.add_argument("-task", default='abs', type=str, choices=['ext', 'abs'])
     parser.add_argument("-encoder", default='bert', type=str, choices=['bert', 'baseline'])
     parser.add_argument("-mode", default='test', type=str, choices=['train', 'validate', 'test'])
-    parser.add_argument("-bert_data_path", default='../../bert_data_new/cnndm')
-    parser.add_argument("-model_path", default='../../models/')
-    parser.add_argument("-result_path", default='../../results/cnndm')
-    parser.add_argument("-temp_dir", default='../../temp')
+    parser.add_argument("-bert_data_path", default='./bert_data_new/cnndm')
+    parser.add_argument("-model_path", default='./models/')
+    parser.add_argument("-result_path", default='./results/cnndm')
+    parser.add_argument("-temp_dir", default='./temp')
 
     parser.add_argument("-batch_size", default=140, type=int)
     parser.add_argument("-test_batch_size", default=200, type=int)
@@ -108,7 +108,7 @@ def init_args():
 
     parser.add_argument('-visible_gpus', default='-1', type=str)
     parser.add_argument('-gpu_ranks', default='0', type=str)
-    parser.add_argument('-log_file', default='../../logs/cnndm.log')
+    parser.add_argument('-log_file', default='./logs/cnndm.log')
     parser.add_argument('-seed', default=666, type=int)
 
     parser.add_argument("-test_all", type=str2bool, nargs='?',const=True,default=False)
@@ -131,7 +131,83 @@ def init_args():
     return args, device_id
 
 if __name__ == '__main__':
-    args, device_id = init_args()
+    # args, device_id = init_args()
+    device_id = -1
+    args = argparse.Namespace(accum_count=1, 
+                              alpha=0.95, 
+                              batch_size=32, 
+                              beam_size=5, 
+                              bert_data_path='./bert_data/cnndm', 
+                              beta1=0.9, 
+                              beta2=0.999, 
+                              block_trigram=True, 
+                              dec_dropout=0.2, 
+                              dec_ff_size=2048, 
+                              dec_heads=8, 
+                              dec_hidden_size=768, 
+                              dec_layers=6, 
+                              enc_dropout=0.2, 
+                              enc_ff_size=512, 
+                              enc_hidden_size=512, 
+                              enc_layers=6, 
+                              encoder='bert', 
+                              ext_dropout=0.2, 
+                              ext_ff_size=2048, 
+                              ext_heads=8, 
+                              ext_hidden_size=768, 
+                              ext_layers=2, 
+                              finetune_bert=True, 
+                              generator_shard_size=32, 
+                              gpu_ranks=[0], 
+                              label_smoothing=0.1, 
+                              large=False, 
+                              load_from_extractive='', 
+                              log_file='./logs/val_abs_bert_cnndm', 
+                              lower=True, 
+                              lr=1, 
+                              lr_bert=0.002, 
+                              lr_dec=0.002, 
+                              max_grad_norm=0, 
+                              max_length=70, 
+                              max_pos=512, 
+                              max_src_nsents=100, 
+                              max_src_ntokens_per_sent=200, 
+                              max_tgt_len=140, 
+                              max_tgt_ntokens=500, 
+                              min_length=10, min_src_nsents=3, 
+                              min_src_ntokens_per_sent=5, 
+                              min_tgt_ntokens=5, 
+                              mode='test', 
+                              model_path='./models/', 
+                              optim='adam', 
+                              param_init=0, 
+                              param_init_glorot=True, 
+                              recall_eval=False, 
+                              report_every=1, 
+                              report_rouge=True, 
+                              result_path='./results/abs_bert_cnndm_sample', 
+                              save_checkpoint_steps=5, 
+                              seed=666, 
+                              sep_optim=True, 
+                              shard_size=2000, 
+                              share_emb=False, 
+                              task='abs', 
+                              temp_dir='./temp', 
+                              test_all=False, 
+                              test_batch_size=500, 
+                              test_from='./models/XSUM_OneSentence/model_step_30000.pt', 
+                              test_start_from=-1, 
+                              train_from='', 
+                              train_steps=1000, 
+                              use_bert_basic_tokenizer=False, 
+                              use_bert_emb=False, 
+                              use_interval=True, 
+                              visible_gpus='-1', 
+                              warmup_steps=8000, 
+                              warmup_steps_bert=8000, 
+                              warmup_steps_dec=8000, 
+                              world_size=1)
+
     print(args.task, args.mode) 
 
     cp = args.test_from
@@ -142,14 +218,14 @@ if __name__ == '__main__':
 
     predictor = load_models_abs(args, device_id, cp, step)
 
-    all_files = glob.glob(os.path.join('../bert_data/cnndm', '*'))
+    all_files = glob.glob(os.path.join('./bert_data/cnndm', '*'))
     print('Files In Input Dir: ' + str(len(all_files)))
     for file in all_files:
         with open(file) as f:
             source=f.read().rstrip()
 
-    data_builder.str_format_to_bert(  source, args, '../bert_data_test/cnndm.test.0.bert.pt') 
-    args.bert_data_path= '../bert_data_test/cnndm'
+    data_builder.str_format_to_bert(  source, args, './bert_data_test/cnndm.test.0.bert.pt') 
+    args.bert_data_path= './bert_data_test/cnndm'
     tgt, time_used = test_text_abs(args, device_id, cp, step, predictor)
 
     # some postprocessing 

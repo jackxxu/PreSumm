@@ -3,3 +3,4 @@ env
 **/__pycache__
 bert_data_test
 pyrouge
+temp
